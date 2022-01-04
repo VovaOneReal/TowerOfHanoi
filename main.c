@@ -1,8 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define SIZE 3
+#define SPACE 32
+#define BG_BLOCK 176
+#define STICK 177
+#define PIECE 178
+#define FLOOR_BLOCK 219
+#define PEAKS -1
+#define FLOOR -2
+#define BACKGROUND -3
+#define LABELS -4
 
 // add counter of moves
+// add protection from incorrecct input
 
 int row1[3] = { 3, 2, 1 };
 int row2[3] = { 0, 0, 0 };
@@ -16,6 +26,9 @@ void output_array(int* t) {
 }
 
 void move(int from, int to);
+
+void draw_symbols(int code, int amount);
+void draw_rows(int value);
 void draw(void);
 
 int* get_array(int index);
@@ -67,12 +80,112 @@ void move(int from, int to) {
 	put_on_top(to_arr, value);
 }
 
+void draw_symbols(int code, int amount) {
+	char c = code;
+	for (int i = 0; i < amount; i++) {
+		printf("%c", c);
+	}
+}
+
+void draw_rows(int value) {
+	if (value == 0) {
+		draw_symbols(BG_BLOCK, 19);
+		draw_symbols(STICK, 2);
+		draw_symbols(BG_BLOCK, 19);
+	}
+	else if (value == 1) {
+		draw_symbols(BG_BLOCK, 14);
+		draw_symbols(PIECE, 12);
+		draw_symbols(BG_BLOCK, 14);
+	}
+	else if (value == 2) {
+		draw_symbols(BG_BLOCK, 8);
+		draw_symbols(PIECE, 24);
+		draw_symbols(BG_BLOCK, 8);
+	}
+	else if (value == 3) {
+		draw_symbols(BG_BLOCK, 2);
+		draw_symbols(PIECE, 36);
+		draw_symbols(BG_BLOCK, 2);
+	}
+	else if (value == PEAKS) {
+		draw_symbols(BG_BLOCK, 19);
+		draw_symbols(STICK, 2);
+		draw_symbols(BG_BLOCK, 19);
+		draw_symbols(BG_BLOCK, 19);
+		draw_symbols(STICK, 2);
+		draw_symbols(BG_BLOCK, 19);
+		draw_symbols(BG_BLOCK, 19);
+		draw_symbols(STICK, 2);
+		draw_symbols(BG_BLOCK, 19);
+	}
+	else if (value == FLOOR) {
+		draw_symbols(FLOOR_BLOCK, 120);
+	}
+	else if (value == BACKGROUND) {
+		draw_symbols(BG_BLOCK, 120);
+	}
+	else if (value == LABELS) {
+		draw_symbols(PIECE, 9);
+
+		draw_symbols(STICK, 5);
+		draw_symbols(BG_BLOCK, 3);
+		draw_symbols(SPACE, 1);
+		printf("Row 1");
+		draw_symbols(SPACE, 1);
+		draw_symbols(BG_BLOCK, 3);
+		draw_symbols(STICK, 5);
+
+		draw_symbols(PIECE, 17);
+
+		draw_symbols(STICK, 5);
+		draw_symbols(BG_BLOCK, 3);
+		draw_symbols(SPACE, 1);
+		printf("Row 2");
+		draw_symbols(SPACE, 1);
+		draw_symbols(BG_BLOCK, 3);
+		draw_symbols(STICK, 5);
+
+		draw_symbols(PIECE, 17);
+
+		draw_symbols(STICK, 5);
+		draw_symbols(BG_BLOCK, 3);
+		draw_symbols(SPACE, 1);
+		printf("Row 3");
+		draw_symbols(SPACE, 1);
+		draw_symbols(BG_BLOCK, 3);
+		draw_symbols(STICK, 5);
+
+		draw_symbols(PIECE, 8);
+	}
+	else if (value == LABELS) {
+		draw_symbols(PIECE, 18);
+		printf("Row 1");
+		draw_symbols(PIECE, 35);
+		printf("Row 2");
+		draw_symbols(PIECE, 35);
+		printf("Row 3");
+		draw_symbols(PIECE, 17);
+	}
+}
+
 void draw(void) {
-	printf("\n");
-	output_array(row1);
-	output_array(row2);
-	output_array(row3);
-	printf("\n");
+	
+	draw_rows(BACKGROUND);
+	draw_rows(PEAKS);
+
+	for (int h = SIZE - 1; h >= 0; h--) {
+		for (int i = 0; i < 2; i++) {
+			draw_rows(row1[h]);
+			draw_rows(row2[h]);
+			draw_rows(row3[h]);
+		}
+	}
+
+	draw_rows(FLOOR);
+	draw_rows(LABELS);
+	draw_rows(FLOOR);
+	printf("\n\n");
 }
 
 int* get_array(int index)
