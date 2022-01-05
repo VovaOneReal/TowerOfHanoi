@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
 #define SIZE 3
 #define SPACE 32
 #define BG_BLOCK 176
@@ -11,8 +13,8 @@
 #define BACKGROUND -3
 #define LABELS -4
 
-// add counter of moves
 // add protection from incorrecct input
+// make the height of the tower scalable
 
 int row1[3] = { 3, 2, 1 };
 int row2[3] = { 0, 0, 0 };
@@ -44,6 +46,8 @@ int check_condition(void);
 
 int main(void) {
 
+	int moves = 0;
+
 	while (check_condition()) {
 		system("cls");
         draw();
@@ -63,11 +67,21 @@ int main(void) {
 		}
 
 		move(get_from, put_on);
+		moves++;
 	}
 
 	system("cls");
 	draw();
 	printf("You have solved the puzzle!\n");
+	printf("You have done it for %d moves.\n", moves);
+
+	int optimal = (int) pow(2, SIZE) - 1;
+	if (moves > optimal) {
+		printf("But the puzzle could be solved for %d moves!", optimal);
+	}
+	else {
+		printf("You solved the puzzle brilliantly!");
+	}
 
 	return 0;
 }
