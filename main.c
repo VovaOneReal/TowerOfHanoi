@@ -18,6 +18,7 @@
 // 
 // ADDITIONAL FEAUTURES
 // make rows and their data as 2D array
+// fix bad english
 
 int* row1;
 int* row2;
@@ -84,7 +85,7 @@ int main(void) {
 				system("cls");
 				draw();
 				printf("You can put pieces only on ones which are bigger!\n\n");
-				printf("You've chosen a %d row.\n", put_on);
+				printf("You've chosen the Row %d.\n", put_on);
 			}
 
 			move(get_from, put_on);
@@ -106,7 +107,7 @@ int main(void) {
 
 	printf("\nGoodbye!\n");
 	printf("---------------------------------\n");
-	printf("Made by Vladimir Tolstunov\nVersion 1.0 | January 2022\n");
+	printf("Made by Vladimir Tolstunov (VovaOne)\nVersion 1.0 | January 2022\n");
 
 	return 0;
 }
