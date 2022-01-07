@@ -13,16 +13,19 @@
 #define BACKGROUND -3
 #define LABELS -4
 
-// add protection from incorrect input
-// add self-repair if input some chars
+// TO-DO
+// -----
+// 
+// ADDITIONAL FEAUTURES
 // make rows and their data as 2D array
-// makes it suggest to play again
 
 int* row1;
 int* row2;
 int* row3;
 int* win_row;
 int height = 0;
+int get_from, put_on;
+int moves = 0;
 
 void output_array(int* t) {
 	for (int i = 0; i < height; i++) {
@@ -33,6 +36,10 @@ void output_array(int* t) {
 
 void menu(void);
 void init_tower(void);
+int play_again(void);
+void clear_data(void);
+
+void free_bufer(void);
 
 void move(int from, int to);
 
@@ -53,56 +60,58 @@ int check_condition(void);
 
 int main(void) {
 
-	menu();
-	init_tower();
-
-	int moves = 0;
-
-	while (check_condition()) {
+	do {
 		system("cls");
-        draw();
+		clear_data();
+		menu();
+		init_tower();
 
-		int get_from, put_on;
-
-		output_array(row1);
-		output_array(row2);
-		output_array(row3);
-
-		while (check_is_empty(get_from = get_from_row())) {
+		while (check_condition()) {
 			system("cls");
 			draw();
-			printf("This row is empty! Choose another one.\n\n");
-			continue;
-		}	
-		while (check_puttable(get_from, put_on = put_to_row())) {
-			system("cls");
-			draw();
-			printf("You can put pieces only on ones which are bigger!\n\n");
+
+			//output_array(row1);
+			//output_array(row2);
+			//output_array(row3);
+
+			while (check_is_empty(get_from = get_from_row())) {
+				system("cls");
+				draw();
+				printf("This row is empty! Choose another one.\n\n");
+				continue;
+			}
+			while (check_puttable(get_from, put_on = put_to_row())) {
+				system("cls");
+				draw();
+				printf("You can put pieces only on ones which are bigger!\n\n");
+				printf("You've chosen a %d row.\n", put_on);
+			}
+
+			move(get_from, put_on);
 		}
 
-		move(get_from, put_on);
-		moves++;
-	}
+		system("cls");
+		draw();
+		printf("You have solved the puzzle!\n");
+		printf("You have done it for %d moves.\n", moves);
 
-	system("cls");
-	draw();
-	printf("You have solved the puzzle!\n");
-	printf("You have done it for %d moves.\n", moves);
+		int optimal = (int)pow(2, height) - 1;
+		if (moves > optimal) {
+			printf("But the puzzle could be solved for %d moves!\n\n", optimal);
+		}
+		else {
+			printf("You solved the puzzle brilliantly!\n\n");
+		}
+	} while (play_again());
 
-	int optimal = (int) pow(2, height) - 1;
-	if (moves > optimal) {
-		printf("But the puzzle could be solved for %d moves!", optimal);
-	}
-	else {
-		printf("You solved the puzzle brilliantly!");
-	}
+	printf("\nGoodbye!\n");
+	printf("---------------------------------\n");
+	printf("Made by Vladimir Tolstunov\nVersion 1.0 | January 2022\n");
 
 	return 0;
 }
 
 void menu(void) {
-
-
 	 printf("     ______   ______     __     __     ______     ______\n");
 	 printf("    /\\__  _\\ /\\  __ \\   /\\ \\  _ \\ \\   /\\  ___\\   /\\  == \\\n");
 	 printf("    \\/_/\\ \\/ \\ \\ \\/\\ \\  \\ \\ \\/ \".\\ \\  \\ \\  __\\   \\ \\  __< \n");
@@ -123,7 +132,16 @@ void menu(void) {
 	 printf("\n");
 
 	printf("Enter the height of the tower (19 - max): ");
-	scanf("%d", &height);
+	while (scanf("%d", &height) != 1) {
+		free_bufer();
+	}
+
+	if (height > 19) {
+		height = 19;
+	}
+	else if (height < 1) {
+		height = 1;
+	}
 }
 
 void init_tower(void) {
@@ -141,12 +159,39 @@ void init_tower(void) {
 	}
 }
 
+int play_again(void) {
+	printf("Exit the game?\n(1 - yes, 2 - no)\n");
+	int choice = 0;
+	while (scanf("%d", &choice) != 1) {
+		free_bufer();
+	}
+	if (choice == 1) {
+		return 0;
+	}
+	return 1;
+}
+
+void clear_data(void) {
+	row1 = NULL;
+	row2 = NULL;
+	row3 = NULL;
+	win_row = NULL;
+	height = 0;
+	get_from = 0;
+	put_on = 0;
+	moves = 0;
+}
+
 void move(int from, int to) {
 	int* from_arr = get_array(from);
 	int* to_arr = get_array(to);
 
 	int value = pop_top(from_arr);
 	put_on_top(to_arr, value);
+	
+	if (from != to) {
+		moves++;
+	}
 }
 
 void draw_symbols(int code, int amount) {
@@ -283,7 +328,9 @@ int get_from_row(void)
 {
 	printf("From which row to get?\n");
 	int choice;
-	scanf("%d*c", &choice);
+	while (scanf("%d", &choice) != 1) {
+		free_bufer();
+	}
 	if (choice > 3) {
 		choice = 3;
 	}
@@ -297,7 +344,9 @@ int put_to_row(void)
 {
 	printf("To which row to put?\n");
 	int choice;
-	scanf("%d*c", &choice);
+	while (scanf("%d", &choice) != 1) {
+		free_bufer();
+	}
 	if (choice > 3) {
 		choice = 3;
 	}
@@ -319,6 +368,10 @@ int check_is_empty(int index)
 }
 
 int check_puttable(int from, int to) {
+	if (to == from) {
+		return 0;
+	}
+
 	int* from_arr = get_array(from);
 	int* to_arr = get_array(to);
 	int from_value, to_value;
@@ -391,4 +444,10 @@ int check_condition(void) {
 	}
 
 	return 1;
+}
+
+void free_bufer(void) {
+	while (getchar() != '\n') {
+		continue;
+	}
 }
