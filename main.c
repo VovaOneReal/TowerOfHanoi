@@ -2,30 +2,37 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define SIZE 3
 #define SPACE 32
 #define BG_BLOCK 176
 #define STICK 177
 #define PIECE 178
 #define FLOOR_BLOCK 219
+
 #define PEAKS -1
 #define FLOOR -2
 #define BACKGROUND -3
 #define LABELS -4
 
-// add protection from incorrecct input
-// make the height of the tower scalable
+// add protection from incorrect input
+// add self-repair if input some chars
+// make rows and their data as 2D array
+// makes it suggest to play again
 
-int row1[3] = { 3, 2, 1 };
-int row2[3] = { 0, 0, 0 };
-int row3[3] = { 0, 0, 0 };
+int* row1;
+int* row2;
+int* row3;
+int* win_row;
+int height = 0;
 
 void output_array(int* t) {
-	for (int i = 0; i < SIZE; i++) {
+	for (int i = 0; i < height; i++) {
 		printf("%d ", t[i]);
 	}
 	printf("\n");
 }
+
+void menu(void);
+void init_tower(void);
 
 void move(int from, int to);
 
@@ -46,6 +53,9 @@ int check_condition(void);
 
 int main(void) {
 
+	menu();
+	init_tower();
+
 	int moves = 0;
 
 	while (check_condition()) {
@@ -53,6 +63,10 @@ int main(void) {
         draw();
 
 		int get_from, put_on;
+
+		output_array(row1);
+		output_array(row2);
+		output_array(row3);
 
 		while (check_is_empty(get_from = get_from_row())) {
 			system("cls");
@@ -75,7 +89,7 @@ int main(void) {
 	printf("You have solved the puzzle!\n");
 	printf("You have done it for %d moves.\n", moves);
 
-	int optimal = (int) pow(2, SIZE) - 1;
+	int optimal = (int) pow(2, height) - 1;
 	if (moves > optimal) {
 		printf("But the puzzle could be solved for %d moves!", optimal);
 	}
@@ -84,6 +98,47 @@ int main(void) {
 	}
 
 	return 0;
+}
+
+void menu(void) {
+
+
+	 printf("     ______   ______     __     __     ______     ______\n");
+	 printf("    /\\__  _\\ /\\  __ \\   /\\ \\  _ \\ \\   /\\  ___\\   /\\  == \\\n");
+	 printf("    \\/_/\\ \\/ \\ \\ \\/\\ \\  \\ \\ \\/ \".\\ \\  \\ \\  __\\   \\ \\  __< \n");
+	 printf("       \\ \\_\\  \\ \\_____\\  \\ \\__/\".~\\_\\  \\ \\_____\\  \\ \\_\\ \\_\\\n");
+	 printf("        \\/_/   \\/_____/   \\/_/   \\/_/   \\/_____/   \\/_/ /_/\n");
+	 printf("\n");
+	 printf("                          ______     ______\n");
+	 printf("                         /\\  __ \\   /\\  ___\\\n");
+	 printf("                         \\ \\ \\/\\ \\  \\ \\  __\\\n");
+	 printf("                          \\ \\_____\\  \\ \\_\\\n");
+	 printf("                           \\/_____/   \\/_/\n");
+	 printf("\n");
+	 printf("              __  __     ______     __   __     ______     __\n");
+	 printf("             /\\ \\_\\ \\   /\\  __ \\   /\\ \"-.\\ \\   /\\  __ \\   /\\ \\\n");
+	 printf("             \\ \\  __ \\  \\ \\  __ \\  \\ \\ \\-.  \\  \\ \\ \\/\\ \\  \\ \\ \\\n");
+	 printf("              \\ \\_\\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\\\\"\\_\\  \\ \\_____\\  \\ \\_\\\n");
+	 printf("               \\/_/\\/_/   \\/_/\\/_/   \\/_/ \\/_/   \\/_____/   \\/_/\n");
+	 printf("\n");
+
+	printf("Enter the height of the tower (19 - max): ");
+	scanf("%d", &height);
+}
+
+void init_tower(void) {
+	row1 = (int*)malloc(height * sizeof(int));
+	row2 = (int*)malloc(height * sizeof(int));
+	row3 = (int*)malloc(height * sizeof(int));
+	win_row = (int*)malloc(height * sizeof(int));
+
+	for (int h = height, i = 0; h > 0; h--, i++) {
+		row1[i] = h;
+		win_row[i] = h;
+		
+		row2[i] = 0;
+		row3[i] = 0;
+	}
 }
 
 void move(int from, int to) {
@@ -102,25 +157,31 @@ void draw_symbols(int code, int amount) {
 }
 
 void draw_rows(int value) {
+	int centerer = 0;
+	int block_amount = 0;
+
 	if (value == 0) {
 		draw_symbols(BG_BLOCK, 19);
 		draw_symbols(STICK, 2);
 		draw_symbols(BG_BLOCK, 19);
 	}
-	else if (value == 1) {
-		draw_symbols(BG_BLOCK, 14);
-		draw_symbols(PIECE, 12);
-		draw_symbols(BG_BLOCK, 14);
-	}
-	else if (value == 2) {
-		draw_symbols(BG_BLOCK, 8);
-		draw_symbols(PIECE, 24);
-		draw_symbols(BG_BLOCK, 8);
-	}
-	else if (value == 3) {
-		draw_symbols(BG_BLOCK, 2);
-		draw_symbols(PIECE, 36);
-		draw_symbols(BG_BLOCK, 2);
+	else if (value >= 0) {
+		if (value == height) {
+			block_amount = 38;
+		}
+		else {
+			int add = 38 / height;
+			block_amount = value * add;
+			if (block_amount % 2 != 0) {
+				block_amount++;
+			}
+		}
+		
+		centerer = (40 - block_amount) / 2;
+
+		draw_symbols(BG_BLOCK, centerer);
+		draw_symbols(PIECE, block_amount);
+		draw_symbols(BG_BLOCK, centerer);
 	}
 	else if (value == PEAKS) {
 		draw_symbols(BG_BLOCK, 19);
@@ -188,8 +249,8 @@ void draw(void) {
 	draw_rows(BACKGROUND);
 	draw_rows(PEAKS);
 
-	for (int h = SIZE - 1; h >= 0; h--) {
-		for (int i = 0; i < 2; i++) {
+	for (int h = height - 1; h >= 0; h--) {
+		for (int i = 0; i < 1; i++) {
 			draw_rows(row1[h]);
 			draw_rows(row2[h]);
 			draw_rows(row3[h]);
@@ -222,7 +283,13 @@ int get_from_row(void)
 {
 	printf("From which row to get?\n");
 	int choice;
-	scanf("%d", &choice);
+	scanf("%d*c", &choice);
+	if (choice > 3) {
+		choice = 3;
+	}
+	else if (choice < 1) {
+		choice = 1;
+	}
 	return choice;
 }
 
@@ -230,14 +297,20 @@ int put_to_row(void)
 {
 	printf("To which row to put?\n");
 	int choice;
-	scanf("%d", &choice);
+	scanf("%d*c", &choice);
+	if (choice > 3) {
+		choice = 3;
+	}
+	else if (choice < 1) {
+		choice = 1;
+	}
 	return choice;
 }
 
 int check_is_empty(int index)
 {
 	int* arr = get_array(index);
-	for (int i = 0; i < SIZE; i++) {
+	for (int i = 0; i < height; i++) {
 		if (arr[i] > 0) {
 			return 0;
 		}
@@ -264,8 +337,8 @@ int check_puttable(int from, int to) {
 int get_top(int* t)
 {
 	int index;
-	for (int i = 1; i <= SIZE; i++) {
-		index = SIZE - i;
+	for (int i = 1; i <= height; i++) {
+		index = height - i;
 		if (t[index] == 0) {
 			continue;
 		}
@@ -273,15 +346,15 @@ int get_top(int* t)
 			return t[index];
 		}
 	}
-	return 4;
+	return height+1;
 }
 
 int pop_top(int* t)
 {
 	int index;
 	int value = 0;
-	for (int i = 1; i <= SIZE; i++) {
-		index = SIZE - i;
+	for (int i = 1; i <= height; i++) {
+		index = height - i;
 		int getted = t[index];
 		if (getted == 0) {
 			continue;
@@ -297,7 +370,7 @@ int pop_top(int* t)
 
 void put_on_top(int* t, int value)
 {
-	for (int i = 0; i < SIZE; i++) {
+	for (int i = 0; i < height; i++) {
 		if (t[i] == 0) {
 			t[i] = value;
 			break;
@@ -306,15 +379,14 @@ void put_on_top(int* t, int value)
 }
 
 int check_condition(void) {
-	int win_row[SIZE] = { 3, 2, 1 };
 	int success = 0;
-	for (int i = 0; i < SIZE; i++) {
+	for (int i = 0; i < height; i++) {
 		if (row3[i] == win_row[i]) {
 			success += 1;
 		}
 	}
 
-	if (success == 3) {
+	if (success == height) {
 		return 0;
 	}
 
