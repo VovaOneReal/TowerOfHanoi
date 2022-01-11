@@ -81,11 +81,12 @@ int main(void) {
 				printf("This row is empty! Choose another one.\n\n");
 				continue;
 			}
+			printf("\n");
 			while (check_puttable(get_from, put_on = put_to_row())) {
 				system("cls");
 				draw();
 				printf("You can put pieces only on ones which are bigger!\n\n");
-				printf("You've chosen the Row %d.\n", put_on);
+				printf("You've chosen the Row %d.\n", get_from);
 			}
 
 			move(get_from, put_on);
@@ -93,7 +94,7 @@ int main(void) {
 
 		system("cls");
 		draw();
-		printf("You have solved the puzzle!\n");
+		printf("You have solved the puzzle!\n\n");
 		printf("You have done it for %d moves.\n", moves);
 
 		int optimal = (int)pow(2, height) - 1;
@@ -106,8 +107,10 @@ int main(void) {
 	} while (play_again());
 
 	printf("\nGoodbye!\n");
-	printf("---------------------------------\n");
-	printf("Made by Vladimir Tolstunov (VovaOne)\nVersion 1.0 | January 2022\n");
+	printf("------------------------------------\n");
+	printf("Author: Vladimir Tolstunov (VovaOne)\nVersion 1.0 | January 2022\n\n");
+
+	system("pause");
 
 	return 0;
 }
