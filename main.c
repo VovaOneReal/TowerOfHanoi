@@ -15,10 +15,11 @@
 
 // TO-DO
 // -----
+// code review and refactoring. Someday...
 // 
 // ADDITIONAL FEAUTURES
 // make rows and their data as 2D array
-// fix bad english
+// fix bed english
 
 int* row1;
 int* row2;
@@ -117,26 +118,30 @@ int main(void) {
 }
 
 void menu(void) {
-	 printf("     ______   ______     __     __     ______     ______\n");
-	 printf("    /\\__  _\\ /\\  __ \\   /\\ \\  _ \\ \\   /\\  ___\\   /\\  == \\\n");
-	 printf("    \\/_/\\ \\/ \\ \\ \\/\\ \\  \\ \\ \\/ \".\\ \\  \\ \\  __\\   \\ \\  __< \n");
-	 printf("       \\ \\_\\  \\ \\_____\\  \\ \\__/\".~\\_\\  \\ \\_____\\  \\ \\_\\ \\_\\\n");
-	 printf("        \\/_/   \\/_____/   \\/_/   \\/_/   \\/_____/   \\/_/ /_/\n");
-	 printf("\n");
-	 printf("                          ______     ______\n");
-	 printf("                         /\\  __ \\   /\\  ___\\\n");
-	 printf("                         \\ \\ \\/\\ \\  \\ \\  __\\\n");
-	 printf("                          \\ \\_____\\  \\ \\_\\\n");
-	 printf("                           \\/_____/   \\/_/\n");
-	 printf("\n");
-	 printf("              __  __     ______     __   __     ______     __\n");
-	 printf("             /\\ \\_\\ \\   /\\  __ \\   /\\ \"-.\\ \\   /\\  __ \\   /\\ \\\n");
-	 printf("             \\ \\  __ \\  \\ \\  __ \\  \\ \\ \\-.  \\  \\ \\ \\/\\ \\  \\ \\ \\\n");
-	 printf("              \\ \\_\\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\\\\"\\_\\  \\ \\_____\\  \\ \\_\\\n");
-	 printf("               \\/_/\\/_/   \\/_/\\/_/   \\/_/ \\/_/   \\/_____/   \\/_/\n");
-	 printf("\n");
+	printf("     ______   ______     __     __     ______     ______\n");
+	printf("    /\\__  _\\ /\\  __ \\   /\\ \\  _ \\ \\   /\\  ___\\   /\\  == \\\n");
+	printf("    \\/_/\\ \\/ \\ \\ \\/\\ \\  \\ \\ \\/ \".\\ \\  \\ \\  __\\   \\ \\  __< \n");
+	printf("       \\ \\_\\  \\ \\_____\\  \\ \\__/\".~\\_\\  \\ \\_____\\  \\ \\_\\ \\_\\\n");
+	printf("        \\/_/   \\/_____/   \\/_/   \\/_/   \\/_____/   \\/_/ /_/\n");
+	printf("\n");
+	printf("                          ______     ______\n");
+	printf("                         /\\  __ \\   /\\  ___\\\n");
+	printf("                         \\ \\ \\/\\ \\  \\ \\  __\\\n");
+	printf("                          \\ \\_____\\  \\ \\_\\\n");
+	printf("                           \\/_____/   \\/_/\n");
+	printf("\n");
+	printf("              __  __     ______     __   __     ______     __\n");
+	printf("             /\\ \\_\\ \\   /\\  __ \\   /\\ \"-.\\ \\   /\\  __ \\   /\\ \\\n");
+	printf("             \\ \\  __ \\  \\ \\  __ \\  \\ \\ \\-.  \\  \\ \\ \\/\\ \\  \\ \\ \\\n");
+	printf("              \\ \\_\\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\\\\"\\_\\  \\ \\_____\\  \\ \\_\\\n");
+	printf("               \\/_/\\/_/   \\/_/\\/_/   \\/_/ \\/_/   \\/_____/   \\/_/\n");
+	printf("\n");
 
-	printf("Enter the height of the tower (19 - max): ");
+	printf("Tower of Hanoi is a popular puzzle game. Three rods are given. \nOne of them has a pyramid-shaped disk stacked on it.\n\n");
+	printf("Your goal is to move the tower from the left rod to the right.\n\n");
+	printf("Moving rules: \n1) you can move only one disc at a time; \n2) to move, you take only the top disc on the rod; \n3) you cannot place a larger disc on a smaller disc.\n\n");
+
+	printf("To start solving the puzzle, enter the height of the tower (19 - max): ");
 	while (scanf("%d", &height) != 1) {
 		free_bufer();
 	}
