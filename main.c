@@ -27,6 +27,7 @@ int* win_row;
 int height = 0;
 int get_from, put_on;
 int moves = 0;
+int is_after_wrong_move = 0;
 
 void output_array(int* t) {
 	for (int i = 0; i < height; i++) {
@@ -184,6 +185,7 @@ void clear_data(void) {
 	get_from = 0;
 	put_on = 0;
 	moves = 0;
+	is_after_wrong_move = 0;
 }
 
 void move(int from, int to) {
@@ -229,7 +231,23 @@ void draw_rows(int value) {
 		centerer = (40 - block_amount) / 2;
 
 		draw_symbols(BG_BLOCK, centerer);
-		draw_symbols(PIECE, block_amount);
+
+		if (!is_after_wrong_move) {
+			draw_symbols(PIECE, block_amount);
+		}
+		else {
+			int separated_block_amount = (block_amount - 2) / 2;
+
+			draw_symbols(PIECE, separated_block_amount);
+			if (value < 10) {
+				printf("0");
+				printf("%d", value);
+			}
+			else {
+				printf("%d", value);
+			}
+			draw_symbols(PIECE, separated_block_amount);
+		}
 		draw_symbols(BG_BLOCK, centerer);
 	}
 	else if (value == PEAKS) {
@@ -384,9 +402,11 @@ int check_puttable(int from, int to) {
 	to_value = get_top(to_arr);
 
 	if (from_value < to_value) {
+		is_after_wrong_move = 0;
 		return 0;
 	}
 	else {
+		is_after_wrong_move = 1;
 		return 1;
 	}
 }
